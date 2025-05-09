@@ -8,20 +8,22 @@ import (
 	"megaCrawler/crawlers"
 	"megaCrawler/extractors"
 	"net/http"
-	"strings"
 
 	"github.com/gocolly/colly/v2"
 )
 
-type Response struct {
-	Results []ResultItem `json:"results"`
+// Go的一个包下不能重复声明一个函数
+// 请在创建自定义结构体和函数时，加上文件前缀（如一下的示例，保证命名唯一）
+type Response_A11 struct {
+	Results []ResultItem_A11 `json:"results"`
 }
 
-type ResultItem struct {
+type ResultItem_A11 struct {
 	Alias string `json:"alias"`
 }
 
-func FetchAndVisitArticles(engine *crawlers.WebsiteEngine, page int) {
+// 修改函数名
+func FetchAndVisitArticles_A11(engine *crawlers.WebsiteEngine, page int) {
 	url := fmt.Sprintf("https://theedgemalaysia.com/api/loadMoreCategories?offset=%d&categories=news", page)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -36,7 +38,7 @@ func FetchAndVisitArticles(engine *crawlers.WebsiteEngine, page int) {
 		return
 	}
 
-	var jsonResp Response
+	var jsonResp Response_A11
 	if err := json.Unmarshal(body, &jsonResp); err != nil {
 		log.Printf("解析 JSON 失败: %v\n", err)
 		return
@@ -75,9 +77,7 @@ func init() {
 
 	engine.OnHTML("div.newsTextDataWrapInner > p", func(element *colly.HTMLElement, ctx *crawlers.Context) {
 		if ctx.PageType == crawlers.News {
-			if !strings.Contains(element.Text, "English version") {
-				ctx.Content += element.Text
-			}
+			ctx.Content += element.Text
 		}
 	})
 }
